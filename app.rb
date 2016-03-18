@@ -1,7 +1,9 @@
 require 'sinatra'
 
-class MockCloud < Sinatra::Base
+require './lib'
+
+class Mock_Cloud < Sinatra::Base
     get '/:provider/*' do
-        
+
     end
 end
