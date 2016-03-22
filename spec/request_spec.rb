@@ -1,20 +1,22 @@
 require 'base64'
+require 'dotenv'
 require 'hmac-sha1'
-require 'aws/request'
-require 'digital_ocean/request'
-require 'gce/request'
+require 'aws_request'
+require 'do_request'
+require 'gce_request'
 
 describe 'Request' do
     before do
-        aws_auth = "AWS #{ENV['AWS_ACCESS_KEY_ID']}:#{base64.encode64((HMAC::SHA1.new(ENV['AWS_SECRET_KEY_ID']) << ENV['AWS_REGION']).digest).strip}"
-        @aws = Lib::Aws::Request.new(aws_auth, nil)
-        @do = Lib::Digital_Ocean::Request.new("Bearer #{ENV['DO_TOKEN']}")
-        @gce = Lib::Gce::Request.new("Bearer #{ENV['GCE_TOKEN']}")
+        Dotenv.load
+        aws_auth = "AWS #{ENV['AWS_ACCESS_KEY_ID']}:#{Base64.encode64((HMAC::SHA1.new(ENV['AWS_SECRET_KEY_ID']) << ENV['AWS_REGION']).digest).strip}"
+        @aws = Aws_Request.new(aws_auth, nil)
+        @do = DO_Request.new("Bearer #{ENV['DO_TOKEN']}", nil)
+        @gce = Gce_Request.new("Bearer #{ENV['GCE_TOKEN']}", nil)
     end
     describe 'Aws' do
         describe '#auth' do
             it 'should be able to auth with the actual cloud provider' do
-
+                expect(@aws.is_authd?).to_not eq(nil)
             end
         end
         describe '#fetch' do
@@ -42,7 +44,7 @@ describe 'Request' do
     describe 'Digital_Ocean' do
         describe '#auth' do
             it 'should be able to auth with the actual cloud provider' do
-
+                expect(@do.is_authd?).to_not eq(nil)
             end
         end
         describe '#fetch' do
@@ -70,7 +72,7 @@ describe 'Request' do
     describe 'Gce' do
         describe '#auth' do
             it 'should be able to auth with the actual cloud provider' do
-
+                expect(@gce.is_authd?).to_not eq(nil)
             end
         end
         describe '#fetch' do
